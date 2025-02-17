@@ -1,48 +1,61 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Domain.DAL;
 
 namespace ToDoList.Infrastructure.Dal.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        public Task<TEntity> AddAsync(TEntity entity)
+        private readonly AppDbContext _context;
+        private DbSet<TEntity> _dbSet; 
+
+        public Repository(AppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+            _dbSet = context.Set<TEntity>();
+        }
+        public virtual async Task AddAsync(TEntity entity)
+        {
+           await _dbSet.AddAsync(entity);
+           await _context.SaveChangesAsync();
         }
 
-        public Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            throw new NotImplementedException();
+            await _dbSet.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var entity = await _dbSet.FindAsync(id)?? throw new KeyNotFoundException();
+            _dbSet.Remove(entity);
         }
 
-        public Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return _dbSet.AsEnumerable();
         }
 
-        public IQueryable<TEntity> GetAllQueryable()
+        public virtual IQueryable<TEntity> GetAllQueryable()
         {
-            throw new NotImplementedException();
+            return _dbSet.AsQueryable();
         }
 
-        public Task<TEntity> GetByIdAsync(int id)
+        public virtual async Task<TEntity> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+           return await _dbSet.FindAsync(id) ?? throw new KeyNotFoundException();
         }
 
-        public Task<IEnumerable<TEntity>> GetWhereAsync(Expression<Func<TEntity, bool>> predicate)
-        {
-            throw new NotImplementedException();
+        public virtual async Task<IEnumerable<TEntity>> GetWhereAsync(Expression<Func<TEntity, bool>> predicate)
+        { 
+            return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public Task UpdateAsync(TEntity entity)
+        public virtual async Task UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }
