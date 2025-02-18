@@ -1,18 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Infrastructure.Dal.Entities;
 
 namespace ToDoList.Infrastructure.Dal
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<UserEntity,IdentityRole<int>,int>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
-        DbSet<User> Users { get; set; }
-        DbSet<ToDoItem> ToDoItems { get; set; }
-        DbSet<ToDoListEntity> ToDoLists { get; set; }
-        DbSet<ToDoTag> ToDoTags { get; set; }
-        DbSet<ToDoComment> ToDoComments { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<TaskItem> ToDoItems { get; set; }
+        public DbSet<Entities.ToDoItemsList> ToDoLists { get; set; }
+        public DbSet<ToDoItemComment> ToDoComments { get; set; }
     }
 }

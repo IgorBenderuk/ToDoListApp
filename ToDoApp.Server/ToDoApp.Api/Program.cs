@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using ToDoApp.Api.Extensions;
+using ToDoList.Application.Helpers;
 using ToDoList.Infrastructure.Dal;
+using ToDoList.Infrastructure.Dal.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -9,6 +12,10 @@ builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(config.GetCo
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+builder.Services.AddOptionConfiguration(config);
+builder.Services.AddIdentityConfiguration();
 
 var app = builder.Build();
 
@@ -23,5 +30,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapIdentityApi<UserEntity>();
 app.Run();

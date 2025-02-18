@@ -2,9 +2,10 @@
 {
     public enum ToDoStatus
     {
-        TODO,
+        Backlog,
+        ToDo,
         InProgress,
-        Completed,
-        Cancelled
+        Pending,
+        Done
     }
 }
